@@ -1,0 +1,9 @@
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName = 'br.com.cemim.igor.Application'
+
+jar {
+  manifest {
+    attributes 'Main-Class' : 'br.com.cemim.igor.Application'
+  }
+}
