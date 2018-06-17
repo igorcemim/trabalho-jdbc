@@ -45,7 +45,21 @@ public class PlacaDAO implements GenericDAO<Placa> {
     }
 
     public int delete(Placa obj) {
-        return 0;
+        try(
+            PreparedStatement stmt = connection.prepareStatement(
+                PlacaSql.DELETE.getSql()
+            )
+        ) {
+            stmt.setString(1, obj.getLetras());
+            stmt.setString(2, obj.getNumeros());
+            if (stmt.executeUpdate() > 0) {
+                return 1;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Ocorreu um erro ao apagar a placa.");
+        }
+        return -1;
     }
 
     public TreeSet<Placa> listAll() {
@@ -56,4 +70,7 @@ public class PlacaDAO implements GenericDAO<Placa> {
         return null;
     }
 
+    public Placa find(Placa obj) {
+        return null;
+    }
 }

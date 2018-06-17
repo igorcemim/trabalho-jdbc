@@ -3,9 +3,7 @@ package br.com.cemim.igor.classes;
 import java.util.Collection;
 
 import br.com.cemim.igor.dao.CarroDAO;
-import br.com.cemim.igor.dao.PlacaDAO;
 import br.com.cemim.igor.factory.CarroDAOFactory;
-import br.com.cemim.igor.factory.PlacaDAOFactory;
 
 // @todo toString()
 public class Carro implements Comparable<Carro> {

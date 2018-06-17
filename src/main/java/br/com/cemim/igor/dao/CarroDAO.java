@@ -48,7 +48,21 @@ public class CarroDAO implements GenericDAO<Carro> {
     }
 
     public int delete(Carro obj) {
-        return 0;
+        try(
+            PreparedStatement stmt = connection.prepareStatement(
+                CarroSql.DELETE.getSql()
+            )
+        ) {
+            stmt.setString(1, obj.getPlaca().getLetras());
+            stmt.setString(2, obj.getPlaca().getNumeros());
+            if (stmt.executeUpdate() > 0) {
+                return 1;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Ocorreu um erro ao apagar o carro.");
+        }
+        return -1;
     }
 
     public TreeSet<Carro> listAll() {
@@ -85,5 +99,4 @@ public class CarroDAO implements GenericDAO<Carro> {
     public Carro findByID(int id) {
         return null;
     }
-
 }

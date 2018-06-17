@@ -2,8 +2,8 @@ package br.com.cemim.igor;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Scanner;
 import java.util.Collection;
+import java.util.Scanner;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -102,7 +102,14 @@ public class Application {
 		System.out.println("* Listar Carros *");
 
 		Carro carro = new Carro();
-		for (Carro carroAtual : carro.listAll()) {
+		Collection<Carro> carros = carro.listAll();
+
+		if (carros.size() == 0) {
+			System.out.println("Nenhum carro cadastrado.");
+			return;
+		}
+
+		for (Carro carroAtual : carros) {
 			System.out.println(carroAtual);
 		}
     }
@@ -122,8 +129,12 @@ public class Application {
 		Carro carro = new Carro();
 		carro.setPlaca(placa);
 
-		carro.delete();
-		placa.delete();
+		if (carro.delete() == 1) {
+			System.out.println("O carro foi apagado.");
+		}
+		if (placa.delete() == 1) {
+			System.out.println("A placa foi apagada.");
+		}
     }
 
     public void pesquisarCarroPorAno(Scanner scanner) {
@@ -134,8 +145,8 @@ public class Application {
 
 		Stream<Carro> carros = new Carro().listAll().stream();
 		Predicate<Carro> filtro = carroAtual -> carroAtual.getAno() == ano;
-		long resultados = carros.filter(filtro).count();
-		if (resultados > 0) {
+		long quantidadeResultados = carros.filter(filtro).count();
+		if (quantidadeResultados > 0) {
 			carros
 				.filter(filtro)
 				.forEach(carroAtual -> System.out.println(carroAtual));

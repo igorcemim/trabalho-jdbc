@@ -3,7 +3,7 @@ package br.com.cemim.igor.sql;
 public enum PlacaSql {
     INSERT("insert into placa(letras, numeros) values (?, ?)"),
     UPDATE("update placa set letras = ?, numeros = ? where id = ?"),
-    DELETE("delete from placa where id = ?"),
+    DELETE("delete from placa where letras = ? and numeros = ?"),
     FIND_BY_ID("select * from placa where id = ?"),
     LIST_ALL("select * from placa");
 
