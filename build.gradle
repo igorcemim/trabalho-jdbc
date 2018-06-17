@@ -2,6 +2,18 @@ apply plugin: 'java'
 apply plugin: 'application'
 mainClassName = 'br.com.cemim.igor.Application'
 
+run {
+  standardInput = System.in
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.13'
+}
+
 jar {
   manifest {
     attributes 'Main-Class' : 'br.com.cemim.igor.Application'

@@ -1,7 +1,13 @@
 package br.com.cemim.igor.classes;
 
+import java.util.Collection;
+
+import br.com.cemim.igor.dao.CarroDAO;
+import br.com.cemim.igor.dao.PlacaDAO;
+import br.com.cemim.igor.factory.CarroDAOFactory;
+import br.com.cemim.igor.factory.PlacaDAOFactory;
+
 // @todo toString()
-// @todo compareTo
 public class Carro implements Comparable<Carro> {
 
     private int id;
@@ -9,6 +15,13 @@ public class Carro implements Comparable<Carro> {
     private String modelo;
     private String montadora;
     private Placa placa;
+    private CarroDAO carroDAO;
+    private PlacaDAO placaDAO;
+
+    public Carro() {
+        this.carroDAO = new CarroDAOFactory().create();
+        this.placaDAO = new PlacaDAOFactory().create();
+    }
 
     public int getId() {
         return id;
@@ -51,7 +64,27 @@ public class Carro implements Comparable<Carro> {
     }
 
     public int compareTo(Carro carro) {
-        return 0;
+        return Integer.compare(this.ano, carro.getAno());
+    }
+
+    public int insert() {
+        return carroDAO.insert(this);
+    }
+
+    public Collection<Carro> listAll() {
+        return carroDAO.listAll();
+    }
+
+    public int update() {
+        return carroDAO.update(this);
+    }
+
+    public int delete() {
+        return carroDAO.delete(this);
+    }
+
+    public Carro findByID() {
+        return carroDAO.findByID(this.getId());
     }
 
 }
