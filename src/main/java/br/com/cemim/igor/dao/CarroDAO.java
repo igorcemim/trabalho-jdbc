@@ -44,7 +44,7 @@ public class CarroDAO implements GenericDAO<Carro> {
     }
 
     public int update(Carro obj) {
-        return 0;
+        throw new UnsupportedOperationException("Não implementado.");
     }
 
     public int delete(Carro obj) {
@@ -97,6 +97,6 @@ public class CarroDAO implements GenericDAO<Carro> {
     }
 
     public Carro findByID(int id) {
-        return null;
+        throw new UnsupportedOperationException("Não implementado.");
     }
 }

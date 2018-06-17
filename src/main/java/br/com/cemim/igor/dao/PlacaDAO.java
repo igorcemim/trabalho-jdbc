@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.TreeSet;
+import java.util.ArrayList;
 
 import br.com.cemim.igor.classes.Placa;
 import br.com.cemim.igor.sql.PlacaSql;
@@ -41,7 +41,7 @@ public class PlacaDAO implements GenericDAO<Placa> {
     }
 
     public int update(Placa obj) {
-        return 0;
+        throw new UnsupportedOperationException("Não implementado.");
     }
 
     public int delete(Placa obj) {
@@ -62,11 +62,31 @@ public class PlacaDAO implements GenericDAO<Placa> {
         return -1;
     }
 
-    public TreeSet<Placa> listAll() {
+    public ArrayList<Placa> listAll() {
+        ArrayList<Placa> lista = new ArrayList<>();
+
+        try (
+            PreparedStatement stmt = connection.prepareStatement(
+                PlacaSql.LIST_ALL.getSql()
+            )
+        ) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Placa placa = new Placa();
+                placa.setId(rs.getInt("id"));
+                placa.setLetras(rs.getString("letras"));
+                placa.setNumeros(rs.getString("numeros"));
+
+                lista.add(placa);
+            }
+            return lista;
+        } catch (SQLException e) {
+            System.out.println("Ocorreu um erro ao listar as placas.");
+        }
         return null;
     }
 
     public Placa findByID(int id) {
-        return null;
+        throw new UnsupportedOperationException("Não implementado.");
     }
 }
