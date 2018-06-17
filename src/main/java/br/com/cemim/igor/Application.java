@@ -3,6 +3,9 @@ package br.com.cemim.igor;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Scanner;
+import java.util.Collection;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import br.com.cemim.igor.classes.Carro;
 import br.com.cemim.igor.classes.Placa;
@@ -33,8 +36,8 @@ public class Application {
 			System.out.println("CARROS");
 			System.out.println("1 - Cadastrar");
 			System.out.println("2 - Listar");
-			System.out.println("3 - Pesquisar");
-			System.out.println("4 - Excluir");
+			System.out.println("3 - Excluir");
+			System.out.println("4 - Pesquisar");
 			System.out.println("5 - Sair");
 			System.out.println("Informe a opção:");
 			opcao = scanner.nextInt();
@@ -129,8 +132,16 @@ public class Application {
 		System.out.println("Informe o ano:");
 		int ano = scanner.nextInt();
 
-		Carro carro = new Carro();
-		carro.findByID(); // @todo mudar pra find
+		Stream<Carro> carros = new Carro().listAll().stream();
+		Predicate<Carro> filtro = carroAtual -> carroAtual.getAno() == ano;
+		long resultados = carros.filter(filtro).count();
+		if (resultados > 0) {
+			carros
+				.filter(filtro)
+				.forEach(carroAtual -> System.out.println(carroAtual));
+		} else {
+			System.out.println("Nenhum carro encontrado.");
+		}
     }
 
 }

@@ -16,11 +16,9 @@ public class Carro implements Comparable<Carro> {
     private String montadora;
     private Placa placa;
     private CarroDAO carroDAO;
-    private PlacaDAO placaDAO;
 
     public Carro() {
         this.carroDAO = new CarroDAOFactory().create();
-        this.placaDAO = new PlacaDAOFactory().create();
     }
 
     public int getId() {
