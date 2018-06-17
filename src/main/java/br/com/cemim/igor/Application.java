@@ -65,11 +65,11 @@ public class Application {
 					break;
 
 				case 5:
-					System.out.println("Saindo...");
+					System.out.println("\nSaindo...\n");
 					break;
 
 				default:
-					System.out.println("Opção inválida.");
+					System.out.println("\nOpção inválida.\n");
 			}
 		}
 	}
