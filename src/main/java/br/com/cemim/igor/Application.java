@@ -94,8 +94,12 @@ public class Application {
 		carro.setMontadora(montadora);
 		carro.setPlaca(placa);
 
-		placa.insert();
-		carro.insert();
+		if (placa.insert() == 1) {
+			System.out.println("Placa cadastrada.");
+		}
+		if (carro.insert() == 1) {
+			System.out.println("Carro cadastrado.");
+		}
     }
 
     public void listarCarros() {
