@@ -69,8 +69,4 @@ public class PlacaDAO implements GenericDAO<Placa> {
     public Placa findByID(int id) {
         return null;
     }
-
-    public Placa find(Placa obj) {
-        return null;
-    }
 }
