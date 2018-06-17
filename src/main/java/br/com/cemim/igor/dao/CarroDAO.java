@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.TreeSet;
 
 import br.com.cemim.igor.classes.Carro;
+import br.com.cemim.igor.classes.Placa;
 import br.com.cemim.igor.sql.CarroSql;
 
 public class CarroDAO implements GenericDAO<Carro> {
@@ -51,6 +52,33 @@ public class CarroDAO implements GenericDAO<Carro> {
     }
 
     public TreeSet<Carro> listAll() {
+        TreeSet<Carro> lista = new TreeSet<>();
+
+        try (
+            PreparedStatement stmt = connection.prepareStatement(
+                CarroSql.LIST_ALL.getSql()
+            )
+        ) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Placa placa = new Placa();
+                placa.setId(rs.getInt("placa_id"));
+                placa.setLetras(rs.getString("letras"));
+                placa.setNumeros(rs.getString("numeros"));
+
+                Carro carro = new Carro();
+                carro.setId(rs.getInt("id"));
+                carro.setAno(rs.getInt("ano"));
+                carro.setModelo(rs.getString("modelo"));
+                carro.setMontadora(rs.getString("montadora"));
+                carro.setPlaca(placa);
+
+                lista.add(carro);
+            }
+            return lista;
+        } catch (SQLException e) {
+            System.out.println("Ocorreu um erro ao listar os carros.");
+        }
         return null;
     }
 

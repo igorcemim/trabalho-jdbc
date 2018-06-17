@@ -87,4 +87,15 @@ public class Carro implements Comparable<Carro> {
         return carroDAO.findByID(this.getId());
     }
 
+    public String toString() {
+        return String.format(
+            "Carro {\n\t id = %d,\n\t ano = %d,\n\t modelo = %s,\n\t montadora = %s,\n\t placa = %s\n}",
+            this.id,
+            this.ano,
+            this.modelo,
+            this.montadora,
+            this.placa != null ? this.placa.toString() : "Sem placa"
+        );
+    }
+
 }

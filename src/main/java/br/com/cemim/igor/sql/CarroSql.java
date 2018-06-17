@@ -5,7 +5,7 @@ public enum CarroSql {
     UPDATE("update carro set ano = ?, modelo = ?, montadora = ?, placa_id = ? where id = ?"),
     DELETE("delete from carro where id = ?"),
     FIND_BY_ID("select * from carro where id = ?"),
-    LIST_ALL("select * from carro");
+    LIST_ALL("select * from carro c inner join placa p on p.id = c.placa_id");
 
     private final String sql;
 

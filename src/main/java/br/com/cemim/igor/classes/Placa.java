@@ -60,4 +60,13 @@ public class Placa {
     public Placa findByID() {
         return placaDAO.findByID(this.getId());
     }
+
+    public String toString() {
+        return String.format(
+            "Placa {id = %d, ano = %s, modelo = %s}",
+            this.id,
+            this.letras,
+            this.numeros
+        );
+    }
 }
