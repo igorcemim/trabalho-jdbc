@@ -59,7 +59,7 @@ public class Carro implements Comparable<Carro> {
     }
 
     public int compareTo(Carro carro) {
-        return Integer.compare(this.ano, carro.getAno());
+        return Integer.compare(carro.getAno(), this.ano);
     }
 
     public int insert() {

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import br.com.cemim.igor.classes.Placa;
 import br.com.cemim.igor.sql.PlacaSql;
@@ -40,6 +41,7 @@ public class PlacaDAO implements GenericDAO<Placa> {
         return chavePrimaria;
     }
 
+    // @todo implementar
     public int update(Placa obj) {
         throw new UnsupportedOperationException("Não implementado.");
     }
@@ -62,8 +64,8 @@ public class PlacaDAO implements GenericDAO<Placa> {
         return -1;
     }
 
-    public ArrayList<Placa> listAll() {
-        ArrayList<Placa> lista = new ArrayList<>();
+    public Collection<Placa> listAll() {
+        Collection<Placa> lista = new ArrayList<>();
 
         try (
             PreparedStatement stmt = connection.prepareStatement(
@@ -86,6 +88,7 @@ public class PlacaDAO implements GenericDAO<Placa> {
         return null;
     }
 
+    // @todo implementar
     public Placa findByID(int id) {
         throw new UnsupportedOperationException("Não implementado.");
     }

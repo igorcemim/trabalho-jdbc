@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.TreeSet;
 
 import br.com.cemim.igor.classes.Carro;
@@ -43,6 +46,7 @@ public class CarroDAO implements GenericDAO<Carro> {
         return chavePrimaria;
     }
 
+    // @todo implementar
     public int update(Carro obj) {
         throw new UnsupportedOperationException("Não implementado.");
     }
@@ -65,8 +69,8 @@ public class CarroDAO implements GenericDAO<Carro> {
         return -1;
     }
 
-    public TreeSet<Carro> listAll() {
-        TreeSet<Carro> lista = new TreeSet<>();
+    public Collection<Carro> listAll() {
+        ArrayList<Carro> lista = new ArrayList<>();
 
         try (
             PreparedStatement stmt = connection.prepareStatement(
@@ -89,6 +93,7 @@ public class CarroDAO implements GenericDAO<Carro> {
 
                 lista.add(carro);
             }
+            Collections.sort(lista);
             return lista;
         } catch (SQLException e) {
             System.out.println("Ocorreu um erro ao listar os carros.");
@@ -96,6 +101,7 @@ public class CarroDAO implements GenericDAO<Carro> {
         return null;
     }
 
+    // @todo implementar
     public Carro findByID(int id) {
         throw new UnsupportedOperationException("Não implementado.");
     }
