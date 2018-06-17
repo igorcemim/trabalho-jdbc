@@ -5,7 +5,6 @@ import java.util.Collection;
 import br.com.cemim.igor.dao.PlacaDAO;
 import br.com.cemim.igor.factory.PlacaDAOFactory;
 
-// @todo toString()
 public class Placa {
 
     private int id;

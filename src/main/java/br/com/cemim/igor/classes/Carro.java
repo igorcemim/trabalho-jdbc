@@ -5,7 +5,6 @@ import java.util.Collection;
 import br.com.cemim.igor.dao.CarroDAO;
 import br.com.cemim.igor.factory.CarroDAOFactory;
 
-// @todo toString()
 public class Carro implements Comparable<Carro> {
 
     private int id;
