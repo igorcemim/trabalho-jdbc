@@ -1,7 +1,7 @@
 # Trabalho de JDBC
 Trabalho de JDBC para a disciplina de Programação Web I do IFRS.
 
-## Enunciado
+## Definições do trabalho
 1) Crie as classes POJO Carro e Placa.
 2) Agora, crie as classes DAO correspondentes, bem como as enumerações para os SQLs das duas classes. Nessas classes crie todos os métodos definidos pela interface GenericDAO.
 3) Nas classes DAO faça o tratamento das exceções.
