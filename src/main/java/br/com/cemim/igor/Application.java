@@ -17,7 +17,7 @@ import br.com.cemim.igor.factory.ConnectionFactory;
  */
 public class Application {
 
-	private static Connection connection;
+	public static Connection connection;
 	private static final int OPCAO_SAIR = 6;
 
 	public static void main(String[] args) {
