@@ -15,3 +15,9 @@ Trabalho de JDBC para a disciplina de Programação Web I do IFRS.
     3) Excluir carro usando a placa
     4) Pesquisar carro usando o ano
     5) Sair do sistema
+
+## Build e execução
+```
+./gradlew jar
+java -jar build/libs/jdbc.jar
+```
