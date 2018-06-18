@@ -3,7 +3,9 @@ package br.com.cemim.igor.classes;
 import java.util.Collection;
 
 import br.com.cemim.igor.dao.CarroDAO;
+import br.com.cemim.igor.dao.PlacaDAO;
 import br.com.cemim.igor.factory.CarroDAOFactory;
+import br.com.cemim.igor.factory.PlacaDAOFactory;
 
 public class Carro implements Comparable<Carro> {
 
@@ -12,10 +14,13 @@ public class Carro implements Comparable<Carro> {
     private String modelo;
     private String montadora;
     private Placa placa;
+    private int idPlaca;
     private CarroDAO carroDAO;
+    private PlacaDAO placaDAO;
 
     public Carro() {
         this.carroDAO = new CarroDAOFactory().create();
+        this.placaDAO = new PlacaDAOFactory().create();
     }
 
     public int getId() {
@@ -35,7 +40,14 @@ public class Carro implements Comparable<Carro> {
     }
 
     public Placa getPlaca() {
+        if (placa == null) {
+            placa = placaDAO.findByID(idPlaca);
+        }
         return placa;
+    }
+
+    public int getIdPlaca() {
+        return idPlaca;
     }
 
     public void setId(int id) {
@@ -56,6 +68,10 @@ public class Carro implements Comparable<Carro> {
 
     public void setPlaca(Placa placa) {
         this.placa = placa;
+    }
+
+    public void setIdPlaca(int idPlaca) {
+        this.idPlaca = idPlaca;
     }
 
     public int compareTo(Carro carro) {
@@ -89,7 +105,7 @@ public class Carro implements Comparable<Carro> {
             this.ano,
             this.modelo,
             this.montadora,
-            this.placa != null ? this.placa.toString() : "Sem placa"
+            this.getPlaca() != null ? this.getPlaca().toString() : "Sem placa"
         );
     }
 

@@ -8,10 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.TreeSet;
 
 import br.com.cemim.igor.classes.Carro;
-import br.com.cemim.igor.classes.Placa;
 import br.com.cemim.igor.sql.CarroSql;
 
 public class CarroDAO implements GenericDAO<Carro> {
@@ -22,18 +20,29 @@ public class CarroDAO implements GenericDAO<Carro> {
         this.connection = connection;
     }
 
+    private void fillStatement(PreparedStatement stmt, Carro obj, boolean update) {
+        try {
+            stmt.setInt(1, obj.getAno());
+            stmt.setString(2, obj.getModelo());
+            stmt.setString(3, obj.getMontadora());
+            stmt.setInt(4, obj.getPlaca().getId());
+            if (update) {
+                stmt.setInt(5, obj.getId());
+            }
+        } catch (SQLException e) {
+            System.out.println("Ocorreu um erro ao preencher os dados do PreparedStatement de carro.");
+        }
+    }
+
     public int insert(Carro obj) {
-        int chavePrimaria = -1;
+        int chavePrimaria = ERRO_OPERACAO;
         try (
             PreparedStatement stmt = connection.prepareStatement(
                 CarroSql.INSERT.getSql(),
                 Statement.RETURN_GENERATED_KEYS
             )
         ) {
-            stmt.setInt(1, obj.getAno());
-            stmt.setString(2, obj.getModelo());
-            stmt.setString(3, obj.getMontadora());
-            stmt.setInt(4, obj.getPlaca().getId());
+            this.fillStatement(stmt, obj, false);
             stmt.execute();
             ResultSet chaves = stmt.getGeneratedKeys();
             if (chaves.next()) {
@@ -46,13 +55,25 @@ public class CarroDAO implements GenericDAO<Carro> {
         return chavePrimaria;
     }
 
-    // @todo implementar
     public int update(Carro obj) {
-        throw new UnsupportedOperationException("Não implementado.");
+        try (
+            PreparedStatement stmt = connection.prepareStatement(
+                CarroSql.UPDATE.getSql()
+            )
+        ) {
+            this.fillStatement(stmt, obj, true);
+            if (stmt.executeUpdate() > 0) {
+                return OPERACAO_EXECUTADA;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Ocorreu um erro ao atualizar o carro.");
+        }
+        return ERRO_OPERACAO;
     }
 
     public int delete(Carro obj) {
-        try(
+        try (
             PreparedStatement stmt = connection.prepareStatement(
                 CarroSql.DELETE.getSql()
             )
@@ -60,13 +81,28 @@ public class CarroDAO implements GenericDAO<Carro> {
             stmt.setString(1, obj.getPlaca().getLetras());
             stmt.setString(2, obj.getPlaca().getNumeros());
             if (stmt.executeUpdate() > 0) {
-                return 1;
+                return OPERACAO_EXECUTADA;
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println("Ocorreu um erro ao apagar o carro.");
         }
-        return -1;
+        return ERRO_OPERACAO;
+    }
+
+    private Carro fillCarro(ResultSet rs) {
+        Carro carro = null;
+        try {
+            carro = new Carro();
+            carro.setId(rs.getInt("id"));
+            carro.setAno(rs.getInt("ano"));
+            carro.setModelo(rs.getString("modelo"));
+            carro.setMontadora(rs.getString("montadora"));
+            carro.setIdPlaca(rs.getInt("placa_id"));
+        } catch (SQLException e) {
+            System.out.println("Ocorreu um erro ao buscar os dados do carro.");
+        }
+        return carro;
     }
 
     public Collection<Carro> listAll() {
@@ -79,18 +115,7 @@ public class CarroDAO implements GenericDAO<Carro> {
         ) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Placa placa = new Placa();
-                placa.setId(rs.getInt("placa_id"));
-                placa.setLetras(rs.getString("letras"));
-                placa.setNumeros(rs.getString("numeros"));
-
-                Carro carro = new Carro();
-                carro.setId(rs.getInt("id"));
-                carro.setAno(rs.getInt("ano"));
-                carro.setModelo(rs.getString("modelo"));
-                carro.setMontadora(rs.getString("montadora"));
-                carro.setPlaca(placa);
-
+                Carro carro = this.fillCarro(rs);
                 lista.add(carro);
             }
             Collections.sort(lista);
@@ -101,8 +126,21 @@ public class CarroDAO implements GenericDAO<Carro> {
         return null;
     }
 
-    // @todo implementar
     public Carro findByID(int id) {
-        throw new UnsupportedOperationException("Não implementado.");
+        Carro carro = null;
+        try (
+            PreparedStatement stmt = connection.prepareStatement(
+                CarroSql.FIND_BY_ID.getSql()
+            )
+        ) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.first()) {
+                carro = this.fillCarro(rs);
+            }
+        } catch (SQLException e) {
+            System.out.println("Ocorreu um erro ao buscar o carro.");
+        }
+        return carro;
     }
 }

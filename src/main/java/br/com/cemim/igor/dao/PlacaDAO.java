@@ -19,16 +19,27 @@ public class PlacaDAO implements GenericDAO<Placa> {
         this.connection = connection;
     }
 
+    private void fillStatement(PreparedStatement stmt, Placa obj, boolean update) {
+        try {
+            stmt.setString(1, obj.getLetras());
+            stmt.setString(2, obj.getNumeros());
+            if (update) {
+                stmt.setInt(3, obj.getId());
+            }
+        } catch (SQLException e) {
+            System.out.println("Ocorreu um erro ao preencher os dados do PreparedStatement de placa.");
+        }
+    }
+
     public int insert(Placa obj) {
-        int chavePrimaria = -1;
+        int chavePrimaria = ERRO_OPERACAO;
         try (
             PreparedStatement stmt = connection.prepareStatement(
                 PlacaSql.INSERT.getSql(),
                 Statement.RETURN_GENERATED_KEYS
             )
         ) {
-            stmt.setString(1, obj.getLetras());
-            stmt.setString(2, obj.getNumeros());
+            this.fillStatement(stmt, obj, false);
             stmt.execute();
             ResultSet chaves = stmt.getGeneratedKeys();
             if (chaves.next()) {
@@ -41,9 +52,21 @@ public class PlacaDAO implements GenericDAO<Placa> {
         return chavePrimaria;
     }
 
-    // @todo implementar
     public int update(Placa obj) {
-        throw new UnsupportedOperationException("Não implementado.");
+        try (
+            PreparedStatement stmt = connection.prepareStatement(
+                PlacaSql.UPDATE.getSql()
+            )
+        ) {
+            this.fillStatement(stmt, obj, true);
+            if (stmt.executeUpdate() > 0) {
+                return OPERACAO_EXECUTADA;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Ocorreu um erro ao atualizar a placa.");
+        }
+        return ERRO_OPERACAO;
     }
 
     public int delete(Placa obj) {
@@ -55,13 +78,26 @@ public class PlacaDAO implements GenericDAO<Placa> {
             stmt.setString(1, obj.getLetras());
             stmt.setString(2, obj.getNumeros());
             if (stmt.executeUpdate() > 0) {
-                return 1;
+                return OPERACAO_EXECUTADA;
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println("Ocorreu um erro ao apagar a placa.");
         }
-        return -1;
+        return ERRO_OPERACAO;
+    }
+
+    private Placa fillPlaca(ResultSet rs) {
+        Placa placa = null;
+        try {
+            placa = new Placa();
+            placa.setId(rs.getInt("id"));
+            placa.setLetras(rs.getString("letras"));
+            placa.setNumeros(rs.getString("numeros"));
+        } catch (SQLException e) {
+            System.out.println("Ocorreu um erro ao buscar os dados da placa.");
+        }
+        return placa;
     }
 
     public Collection<Placa> listAll() {
@@ -74,11 +110,7 @@ public class PlacaDAO implements GenericDAO<Placa> {
         ) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Placa placa = new Placa();
-                placa.setId(rs.getInt("id"));
-                placa.setLetras(rs.getString("letras"));
-                placa.setNumeros(rs.getString("numeros"));
-
+                Placa placa = this.fillPlaca(rs);
                 lista.add(placa);
             }
             return lista;
@@ -88,8 +120,21 @@ public class PlacaDAO implements GenericDAO<Placa> {
         return null;
     }
 
-    // @todo implementar
     public Placa findByID(int id) {
-        throw new UnsupportedOperationException("Não implementado.");
+        Placa p = null;
+        try (
+            PreparedStatement stmt = connection.prepareStatement(
+                PlacaSql.FIND_BY_ID.getSql()
+            )
+        ) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.first()){
+                p = this.fillPlaca(rs);
+            }
+        } catch (SQLException e) {
+            System.out.println("Ocorreu um erro ao buscar a placa.");
+        }
+        return p;
     }
 }

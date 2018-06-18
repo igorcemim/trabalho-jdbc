@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Scanner;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import br.com.cemim.igor.classes.Carro;
 import br.com.cemim.igor.classes.Placa;
@@ -13,6 +12,9 @@ import br.com.cemim.igor.dao.GenericDAO;
 import br.com.cemim.igor.exception.DatabaseConnectionException;
 import br.com.cemim.igor.factory.ConnectionFactory;
 
+/**
+ * @author Igor Ferreira Cemim
+ */
 public class Application {
 
 	public static Connection connection;
@@ -40,10 +42,11 @@ public class Application {
 
 			System.out.println("\nCARROS\n");
 			System.out.println("1 - Cadastrar Carro");
-			System.out.println("2 - Listar Carros");
-			System.out.println("3 - Excluir Carro");
-			System.out.println("4 - Pesquisar Carros");
-			System.out.println("5 - Sair");
+			System.out.println("2 - Atualizar Carro");
+			System.out.println("3 - Listar Carros");
+			System.out.println("4 - Excluir Carro");
+			System.out.println("5 - Pesquisar Carros");
+			System.out.println("6 - Sair");
 			System.out.println("Informe a opção:");
 			opcao = scanner.nextInt();
 
@@ -53,18 +56,22 @@ public class Application {
 					break;
 
 				case 2:
-					app.listarCarros();
+					app.atualizarCarro(scanner);
 					break;
 
 				case 3:
-					app.excluirCarroPorPlaca(scanner);
+					app.listarCarros();
 					break;
 
 				case 4:
-					app.pesquisarCarroPorAno(scanner);
+					app.excluirCarroPorPlaca(scanner);
 					break;
 
 				case 5:
+					app.pesquisarCarroPorAno(scanner);
+					break;
+
+				case 6:
 					System.out.println("\nSaindo...\n");
 					break;
 
@@ -105,6 +112,55 @@ public class Application {
 			}
 			if (carro.insert() == GenericDAO.ERRO_OPERACAO) {
 				throw new Exception("Ocorreu um erro ao inserir o carro.");
+			}
+			Application.connection.commit();
+		} catch (SQLException e) {
+			System.out.println("Ocorreu um erro ao tentar confirmar a transação.");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public void atualizarCarro(Scanner scanner) {
+		try {
+			int id = 0;
+			System.out.println("Informe o código do carro:");
+			id = scanner.nextInt();
+
+			Carro carroModel = new Carro();
+			carroModel.setId(id);
+			Carro carro = carroModel.findByID();
+			if (carro == null) {
+				throw new Exception("Carro não encontrado.");
+			}
+			System.out.println(carro);
+
+			System.out.println("\n* Atualizar Carro *\n");
+			System.out.println("Informe o ano:");
+			int ano = scanner.nextInt();
+			System.out.println("Informe o modelo:");
+			String modelo = scanner.next();
+			System.out.println("Informe a montadora:");
+			String montadora = scanner.next();
+
+			System.out.println("* Placa *");
+			System.out.println("Informe as letras:");
+			String letras = scanner.next();
+			System.out.println("Informe os números:");
+			String numeros = scanner.next();
+
+			carro.getPlaca().setLetras(letras);
+			carro.getPlaca().setNumeros(numeros);
+
+			carro.setAno(ano);
+			carro.setModelo(modelo);
+			carro.setMontadora(montadora);
+
+			if (carro.getPlaca().update() == GenericDAO.ERRO_OPERACAO) {
+				throw new Exception("Não foi possível atualizar a placa.");
+			}
+			if (carro.update() == GenericDAO.ERRO_OPERACAO) {
+				throw new Exception("Não foi possível atualizar o carro.");
 			}
 			Application.connection.commit();
 		} catch (SQLException e) {
