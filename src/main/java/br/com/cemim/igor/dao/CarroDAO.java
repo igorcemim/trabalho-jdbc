@@ -5,9 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.TreeSet;
 
 import br.com.cemim.igor.classes.Carro;
 import br.com.cemim.igor.sql.CarroSql;
@@ -106,7 +105,7 @@ public class CarroDAO implements GenericDAO<Carro> {
     }
 
     public Collection<Carro> listAll() {
-        ArrayList<Carro> lista = new ArrayList<>();
+        TreeSet<Carro> lista = new TreeSet<>();
 
         try (
             PreparedStatement stmt = connection.prepareStatement(
@@ -118,7 +117,6 @@ public class CarroDAO implements GenericDAO<Carro> {
                 Carro carro = this.fillCarro(rs);
                 lista.add(carro);
             }
-            Collections.sort(lista);
             return lista;
         } catch (SQLException e) {
             System.out.println("Ocorreu um erro ao listar os carros.");

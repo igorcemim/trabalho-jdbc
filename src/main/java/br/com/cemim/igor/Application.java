@@ -17,13 +17,14 @@ import br.com.cemim.igor.factory.ConnectionFactory;
  */
 public class Application {
 
-	public static Connection connection;
+	private static Connection connection;
+	private static final int OPCAO_SAIR = 6;
 
 	public static void main(String[] args) {
-		try (Connection connection = new ConnectionFactory().create()) {
-			connection.setAutoCommit(false);
-			Application.connection = connection;
-			Application.menu();
+		try (Connection newConnection = new ConnectionFactory().create()) {
+			newConnection.setAutoCommit(false);
+			connection = newConnection;
+			menu();
 		} catch (ClassNotFoundException e) {
 			System.out.println("Não foi possível localizar o conector MySQL.");
 		} catch (DatabaseConnectionException e) {
@@ -38,7 +39,7 @@ public class Application {
 		Scanner scanner = new Scanner(System.in);
 		Application app = new Application();
 
-		while (opcao != 5) {
+		while (opcao != OPCAO_SAIR) {
 
 			System.out.println("\nCARROS\n");
 			System.out.println("1 - Cadastrar Carro");
@@ -113,7 +114,7 @@ public class Application {
 			if (carro.insert() == GenericDAO.ERRO_OPERACAO) {
 				throw new Exception("Ocorreu um erro ao inserir o carro.");
 			}
-			Application.connection.commit();
+			connection.commit();
 		} catch (SQLException e) {
 			System.out.println("Ocorreu um erro ao tentar confirmar a transação.");
 		} catch (Exception e) {
@@ -162,7 +163,7 @@ public class Application {
 			if (carro.update() == GenericDAO.ERRO_OPERACAO) {
 				throw new Exception("Não foi possível atualizar o carro.");
 			}
-			Application.connection.commit();
+			connection.commit();
 		} catch (SQLException e) {
 			System.out.println("Ocorreu um erro ao tentar confirmar a transação.");
 		} catch (Exception e) {
@@ -211,13 +212,13 @@ public class Application {
 			System.out.println("O carro foi apagado.");
 			System.out.println("A placa foi apagada.");
 
-			Application.connection.commit();
+			connection.commit();
 		} catch (SQLException e) {
 			System.out.println("Ocorreu um erro ao tentar confirmar a transação.");
 		} catch (Exception e) {
 			try {
 				System.out.println(e.getMessage());
-				Application.connection.rollback();
+				connection.rollback();
 			} catch (SQLException rollbackException) {
 				System.out.println("Ocorreu um erro ao tentar cancelar a transação.");
 			}
